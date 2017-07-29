@@ -60,13 +60,13 @@ cprequire_test(["inline:com-zipwhip-widget-svg2gcode"], function(myWidget) {
     
     // load 3dviewer
     // have to tweak our own widget to get it above the 3dviewer
-    $('#' + myWidget.id).css('position', 'relative');
+    $('#' + myWidget.id).css('position', 'absolute');
     //$('#' + myWidget.id).css('background', 'none');
     $('#' + myWidget.id).css('width', '320px');
     $('body').prepend('<div id="3dviewer"></div>');
     chilipeppr.load(
       "#3dviewer",
-      "http://raw.githubusercontent.com/chilipeppr/widget-3dviewer/master/auto-generated-widget.html",
+      "http://raw.githubusercontent.com/dchote/widget-3dviewer/master/auto-generated-widget.html",
       function() {
         cprequire(['inline:com-chilipeppr-widget-3dviewer'], function (threed) {
             threed.init({
@@ -1166,34 +1166,42 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode", ["chilipeppr_ready", "Snap", "Cl
             var svgParentGroup = new THREE.Group();
             svgParentGroup.name = "SvgParentGroup";
             svgParentGroup.add(svgGroup);
-
+            
+            /*
             // Add marquee bounding box
-            var bbox = new THREE.BoundingBoxHelper( svgParentGroup, 0xff0000 );
-            bbox.update();
-            var boxHelper = new THREE.BoxHelper( bbox );
-            boxHelper.position.z = 0.05;
-            boxHelper.material = dashMat;
+            var helper = new THREE.BoxHelper(svgParentGroup, 0xff0000);
+            var boxHelper = new THREE.Box3().setFromObject(helper);
+
+            boxHelper.z = 0.05;
             
             var dashMat = new THREE.LineDashedMaterial( { 
                 color: 0x666666, 
                 dashSize: 1, 
                 gapSize: 1, 
-                linewidth: 2 } )
+                linewidth: 2 } );
+            
+            boxHelper.material = dashMat;
+            
+            
 		    var geometry  = new THREE.Geometry().fromBufferGeometry( boxHelper.geometry );
+            
             geometry.computeLineDistances();
             //var object = new THREE.LineSegments(geometry , new THREE.LineDashedMaterial( { color: 0xffaa00, dashSize: 3, gapSize: 1, linewidth: 2 } ) );
+            // 
+            
             var object = new THREE.Line( geometry, dashMat );
             object.position.z = 0.05;
             svgParentGroup.add(object);
+            
             console.log("boxHelper:", boxHelper);
             //boxHelper.geometry.computeLineDistances();
             //svgGroup.add( boxHelper );
-            
+            */
             // create width / height textbox 3d objects so we can
             // project 3d coords to 2d screen coords
-            console.log("bbox to figure out height/width locations:", bbox.box);
+            console.log("bbox to figure out height/width locations:", bbox);
             
-            var widthPt = new THREE.Vector3(bbox.box.max.x / 2, bbox.box.min.y, 0);
+            var widthPt = new THREE.Vector3(bbox.max.x / 2, bbox.y, 0);
             var widthGeo = new THREE.Geometry();
             //widthGeo.vertices.push(widthPt);
             widthGeo.vertices.push(new THREE.Vector3(0,0,0));
@@ -1202,7 +1210,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode", ["chilipeppr_ready", "Snap", "Cl
             widthParticle.position.y = widthPt.y;
             svgParentGroup.add(widthParticle);
 		    
-            var heightPt = new THREE.Vector3(bbox.box.min.x, bbox.box.max.y / 2, 0);
+            var heightPt = new THREE.Vector3(bbox.min.x, bbox.max.y / 2, 0);
             var heightGeo = new THREE.Geometry();
             heightGeo.vertices.push(new THREE.Vector3(0,0,0));
             var heightParticle = new THREE.Points( heightGeo, new THREE.PointsMaterial( { color: 0x00ff00, size: 5 } ) );
@@ -1210,7 +1218,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode", ["chilipeppr_ready", "Snap", "Cl
 		    heightParticle.position.y = heightPt.y;
 		    svgParentGroup.add(heightParticle);
 
-            var alignBoxPt = new THREE.Vector3(bbox.box.min.x, bbox.box.min.y, 0);
+            var alignBoxPt = new THREE.Vector3(bbox.min.x, bbox.min.y, 0);
             var alignBoxGeo = new THREE.Geometry();
             alignBoxGeo.vertices.push(new THREE.Vector3(0,0,0));
             var alignBoxParticle = new THREE.Points( alignBoxGeo, new THREE.PointsMaterial( { color: 0xffff00, size: 5 } ) );
