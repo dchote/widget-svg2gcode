@@ -1167,7 +1167,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode", ["chilipeppr_ready", "Snap", "Cl
             svgParentGroup.name = "SvgParentGroup";
             svgParentGroup.add(svgGroup);
             
-            /*
+            /* // TODO fix
             // Add marquee bounding box
             var helper = new THREE.BoxHelper(svgParentGroup, 0xff0000);
             var boxHelper = new THREE.Box3().setFromObject(helper);
